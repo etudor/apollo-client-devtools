@@ -12,11 +12,14 @@ import Warning from "../Images/Warning";
 import "./WatchedQueries.less";
 
 const queryLabel = (queryId, query) => {
-  const queryName = getOperationName(parse(query.queryString || query.document.loc.source.body));
+  const queryName = getOperationName(
+    parse(query.queryString || query.document.loc.source.body),
+  );
   if (queryName === null) {
     return queryId;
   }
-  return `${queryName}`;
+
+  return `${queryName} (${JSON.stringify(query.variables)})`;
 };
 
 class WatchedQueries extends React.Component {
@@ -37,14 +40,12 @@ class WatchedQueries extends React.Component {
   }
 
   getQueries() {
-    return this.props.state
-      ? pickBy(this.props.state.queries, query => !query.stopped)
-      : {};
+    return this.props.state ? this.props.state.queries : {};
   }
 
   sortedQueryIds() {
     const queries = this.getQueries();
-    return sortBy(Object.keys(queries), id => parseInt(id, 10));
+    return Object.keys(queries).reverse();
   }
 
   renderSidebarItem(id, query) {

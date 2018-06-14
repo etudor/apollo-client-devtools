@@ -14,6 +14,17 @@ import Queries from "./Images/Queries";
 
 import "../style.less";
 
+function makeid() {
+  var text = "";
+  var possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < 5; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
 const Shell = ({ children }) => (
   <div
     style={{
@@ -97,7 +108,9 @@ export default class Panel extends Component {
 
     this.state = {
       active: "graphiql",
-      tabData: {},
+      tabData: {
+        queries: {},
+      },
       runQuery: undefined,
       runVariables: undefined,
       version: undefined,
@@ -113,8 +126,17 @@ export default class Panel extends Component {
 
     this.props.bridge.on("broadcast:new", _data => {
       const data = JSON.parse(_data);
+
+      const queries = {};
+      Object.values(data.queries).map(query => {
+        const id = makeid();
+        queries[id] = query;
+      });
+
       this.setState(({ tabData }) => ({
-        tabData: Object.assign({}, tabData, data),
+        tabData: Object.assign({}, tabData, {
+          queries: Object.assign({}, tabData.queries, queries),
+        }),
       }));
     });
   }
