@@ -2,12 +2,16 @@
 // when the Apollo Devtools panel is activated.
 import { initBroadCastEvents } from "./broadcastQueries";
 import { initLinkEvents } from "./links";
-import { checkVersions } from "./checkVersions";
 
-// hook should have been injected before this executes.
-const hook = window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__;
+let hook;
 let bridge;
 let connected;
+let storage;
+
+// Exposing bridge ready event, so other dev tools would have an easy way to notify apollo dev tools.
+export const sendBridgeReady = () => {
+  bridge.send("ready", hook.ApolloClient.version);
+};
 
 const connect = () => {
   if (connected) return;
@@ -17,12 +21,12 @@ const connect = () => {
     initBroadCastEvents(hook, bridge);
   }
   bridge.log("backend ready.");
-  bridge.send("ready", hook.ApolloClient.version);
-  checkVersions(hook, bridge);
+  sendBridgeReady();
 };
 
-export const initBackend = b => {
+export const initBackend = (b, h, s) => {
   bridge = b;
-
+  hook = h;
+  storage = s;
   connect();
 };

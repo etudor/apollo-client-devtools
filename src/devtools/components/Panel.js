@@ -48,20 +48,20 @@ const UpgradeNotice = ({ version }) => (
   <Shell>
     <h1 style={{ color: "white" }}>Your Apollo Client needs updating!</h1>
     <h3 style={{ color: "white" }}>
-      We've detected your version of Apollo Client to be v{version}. The Apollo
-      Devtools requires version 2.0.0 or greater. Luckily, upgrading is pretty
-      painless and brings a whole bunch of new features! To learn how to
+      We&apos;ve detected your version of Apollo Client to be v{version}. The
+      Apollo Devtools requires version 2.0.0 or greater. Luckily, upgrading is
+      pretty painless and brings a whole bunch of new features! To learn how to
       upgrade, check out the migration guide{" "}
       <a
         style={{ color: "white" }}
-        href="https://www.apollographql.com/docs/react/2.0-migration.html"
+        href="https://www.apollographql.com/docs/react/recipes/2.0-migration.html"
         target="_blank"
       >
         here!
       </a>
     </h3>
     <h3 style={{ color: "white" }}>
-      To continue using the Devtools with v{version}, check out this guide to
+      To continue using the Devtools with v{version}, check out this guide to{" "}
       <a
         style={{ color: "white" }}
         href="https://github.com/apollographql/apollo-client-devtools/releases/tag/2.0.6"
@@ -69,6 +69,7 @@ const UpgradeNotice = ({ version }) => (
       >
         using the previous version
       </a>
+      .
     </h3>
   </Shell>
 );
@@ -120,12 +121,13 @@ export default class Panel extends Component {
     };
 
     this.props.bridge.on("ready", version => {
-      this.setState({ version });
+      this.setState({ version, notFound: false });
       this.props.bridge.send("panel:ready", "ready");
     });
 
     this.props.bridge.on("broadcast:new", _data => {
       const data = JSON.parse(_data);
+<<<<<<< HEAD
 
       const queries = {};
       Object.values(data.queries).map(query => {
@@ -137,6 +139,12 @@ export default class Panel extends Component {
         tabData: Object.assign({}, tabData, {
           queries: Object.assign({}, tabData.queries, queries),
         }),
+=======
+      if (data.counter) this.props.bridge.send("broadcast:ack", data.counter);
+      this.setState(({ tabData }) => ({
+        tabData: Object.assign({}, tabData, data),
+        notFound: false,
+>>>>>>> cb0e7f47a0df4b4866aaf24c6869a3d5b8310a5b
       }));
     });
   }
@@ -153,7 +161,6 @@ export default class Panel extends Component {
   }
 
   onRun = (queryString, variables, tab, automaticallyRunQuery) => {
-    ga("send", "event", tab, "run-in-graphiql");
     this.setState({
       active: "graphiql",
       runQuery: queryString,

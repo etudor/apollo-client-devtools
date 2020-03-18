@@ -29,13 +29,15 @@ function onPanelHidden() {
 }
 
 function createPanel() {
-  // stop trying if above 10 seconds or already made
-  if (panelCreated || checkCount++ > 10) return;
+  // stop trying if above 120 seconds or already made
+  if (panelCreated || checkCount++ > 120) return;
 
   panelLoaded = false;
   panelShown = false;
+
+  // Other dev tools may not have easy access to Apollo client, so they can set display flag to true manually.
   chrome.devtools.inspectedWindow.eval(
-    `!!(window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__.ApolloClient);`,
+    `!!(window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__.ApolloClient || window.__APOLLO_DEVTOOLS_SHOULD_DISPLAY_PANEL__);`,
     function(result, isException) {
       // XXX how should we better handle this error?
       if (isException) console.warn(isException);
