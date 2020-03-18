@@ -127,7 +127,6 @@ export default class Panel extends Component {
 
     this.props.bridge.on("broadcast:new", _data => {
       const data = JSON.parse(_data);
-<<<<<<< HEAD
 
       const queries = {};
       Object.values(data.queries).map(query => {
@@ -139,12 +138,6 @@ export default class Panel extends Component {
         tabData: Object.assign({}, tabData, {
           queries: Object.assign({}, tabData.queries, queries),
         }),
-=======
-      if (data.counter) this.props.bridge.send("broadcast:ack", data.counter);
-      this.setState(({ tabData }) => ({
-        tabData: Object.assign({}, tabData, data),
-        notFound: false,
->>>>>>> cb0e7f47a0df4b4866aaf24c6869a3d5b8310a5b
       }));
     });
   }

@@ -13,16 +13,6 @@ import Warning from "../Images/Warning";
 import "./WatchedQueries.less";
 
 const queryLabel = (queryId, query) => {
-<<<<<<< HEAD
-  const queryName = getOperationName(
-    parse(query.queryString || query.document.loc.source.body),
-  );
-  if (queryName === null) {
-    return queryId;
-  }
-
-  return `${queryName} (${JSON.stringify(query.variables)})`;
-=======
   let queryName;
 
   if (query.queryString) {
@@ -44,7 +34,6 @@ const queryLabel = (queryId, query) => {
   // If the query name can't be extracted, fallback on the query ID as the
   // label.
   return queryName || queryId;
->>>>>>> cb0e7f47a0df4b4866aaf24c6869a3d5b8310a5b
 };
 
 class WatchedQueries extends React.Component {
